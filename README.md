@@ -46,7 +46,15 @@ Requirements: Node 18+ and a browser with WebGL 2 (current Chrome, Edge, Firefox
 
 ## Deploy to Vercel
 
-`vercel.json` is included (framework `vite`, build `npm run build`, output `dist`). Import the repository in Vercel; no environment variables or secrets are needed. The build uses relative asset paths (`base: './'`), so it also works from any static host or sub-path. All assets (fonts, geometry, textures, sound) are bundled or generated in code — there are no CDN or remote requests at runtime.
+`vercel.json` is included (framework `vite`, install `npm ci`, build `npm run build`, output `dist`). Import the repository in Vercel; no environment variables or secrets are needed.
+
+Vercel project settings to check if a deployment fails:
+
+- **Root Directory** must be empty (the repository root, where `package.json` and `vercel.json` live). If it points to a sub-folder such as `src`, Vercel will not find the build script and will report *“No Output Directory named ‘dist’ found”*.
+- **Node.js version:** 22.x. This is declared in `package.json` → `engines` and in `.nvmrc`; Vite 8 needs Node ≥ 20.19.
+- Leave the Build/Output overrides off (or set them to `npm run build` / `dist`). `vercel.json` already sets them.
+
+`npm run build` runs `vite build` and then `scripts/verify-dist.mjs`. If `dist/index.html` or its bundled assets are missing, the build fails with a clear message instead of failing later at deploy time. The build uses relative asset paths (`base: './'`), so it also works from any static host or sub-path. All assets (fonts, geometry, textures, sound) are bundled or generated in code — there are no CDN or remote requests at runtime.
 
 ## Controls
 

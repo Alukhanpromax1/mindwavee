@@ -4,11 +4,15 @@
   "version": "4.0.0",
   "description": "MindWave (NYAS Junior Academy BrainTech, Team 7086) — The Living Garden: a 3D open-world conceptual prototype. Simulated interactions only; not a validated medical device or clinical treatment.",
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/verify-dist.mjs",
     "preview": "vite preview",
-    "check": "node scripts/check-claims.mjs"
+    "check": "node scripts/check-claims.mjs",
+    "vercel-build": "npm run build"
   },
   "license": "MIT",
   "dependencies": {
