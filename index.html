@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f3b3a" />
+    <meta name="description" content="MindWave — The Living Garden. An explorable 3D conceptual prototype by NYAS Junior Academy BrainTech Team 7086. Simulated interactions only; not a validated medical device or clinical treatment." />
+    <title>MindWave — The Living Garden</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene" aria-label="The Living Garden — 3D world" role="img"></canvas>
+      <div id="vignette" aria-hidden="true"></div>
+
+      <!-- ============================================================ LOADING -->
+      <section id="loading" class="screen is-open" aria-live="polite">
+        <div class="loading-inner">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <p class="eyebrow">MindWave · Team 7086</p>
+          <h1 class="display">The Living Garden</h1>
+          <div class="progress" role="progressbar" aria-label="Growing the garden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span class="progress-fill" id="loading-fill"></span>
+          </div>
+          <p class="muted" id="loading-text">Growing the garden…</p>
+          <p class="disclaimer-line" data-disclaimer></p>
+        </div>
+      </section>
+
+      <!-- ============================================================ INTRO -->
+      <section id="intro" class="screen" aria-live="polite">
+        <div class="intro-captions" id="intro-captions"></div>
+        <button class="btn btn-ghost intro-skip" id="intro-skip" type="button">Skip intro <kbd>Enter</kbd></button>
+      </section>
+
+      <!-- ============================================================ WELCOME -->
+      <section id="welcome" class="screen dialog-screen" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+        <div class="card card-hero">
+          <p class="eyebrow" id="welcome-eyebrow"></p>
+          <h1 class="display" id="welcome-title"></h1>
+          <p class="subtitle" id="welcome-subtitle"></p>
+          <div class="welcome-body" id="welcome-body"></div>
+          <div class="pipeline-mini" aria-label="The proposed MindWave pipeline">
+            <span>EEG signal</span><i></i><span>Signal quality</span><i></i><span>Features</span><i></i><span>Classification</span><i></i><span>Visual feedback</span><i></i><span>Summary</span>
+          </div>
+          <p class="disclaimer" data-disclaimer></p>
+          <div class="actions">
+            <button class="btn btn-primary btn-lg" id="btn-begin" type="button">Begin the journey</button>
+            <button class="btn btn-secondary" data-open="science" type="button">How MindWave would work</button>
+            <button class="btn btn-secondary" data-open="research" type="button">Our research</button>
+            <button class="btn btn-ghost" data-open="settings" type="button">Settings &amp; accessibility</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ TUTORIAL -->
+      <section id="tutorial" class="screen dialog-screen" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+        <div class="card card-tutorial">
+          <p class="eyebrow">Before you begin · <span id="tutorial-step"></span></p>
+          <h2 class="display-sm" id="tutorial-title"></h2>
+          <div class="keys" id="tutorial-keys" aria-hidden="true"></div>
+          <p id="tutorial-body"></p>
+          <div class="dots" id="tutorial-dots" aria-hidden="true"></div>
+          <div class="actions">
+            <button class="btn btn-ghost" id="tutorial-back" type="button">Back</button>
+            <button class="btn btn-primary" id="tutorial-next" type="button">Next</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ HUD -->
+      <div id="hud" aria-hidden="true">
+        <div class="hud-top-left">
+          <div class="pill brand-pill"><span class="brand-dot" aria-hidden="true"></span>MindWave</div>
+          <div class="pill region-pill" id="hud-region">The Luminous Meadow</div>
+        </div>
+        <div class="hud-top-center">
+          <div class="objective" id="hud-objective" aria-live="polite">
+            <span class="objective-arrow" id="hud-arrow" aria-hidden="true"></span>
+            <span class="objective-text" id="hud-objective-text"></span>
+            <span class="objective-dist" id="hud-dist"></span>
+          </div>
+          <div class="guide-chip" id="hud-guiding" hidden>Gliding to your objective · move to stop</div>
+        </div>
+        <div class="hud-top-right">
+          <div class="lights" id="hud-lights" title="Lights carried to the Heart" aria-label="Lights collected"></div>
+          <button class="icon-btn" data-open="journal" type="button" aria-label="Journal (J)" title="Journal (J)"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z M8 20a3 3 0 0 1-3-3 M9 8h6 M9 12h6"/></svg></button>
+          <button class="icon-btn" data-open="map" type="button" aria-label="Map (M)" title="Map (M)"><svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z M9 4v14 M15 6v14"/></svg></button>
+          <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause (Esc)" title="Pause (Esc)"><svg viewBox="0 0 24 24"><path d="M9 6v12 M15 6v12"/></svg></button>
+        </div>
+        <div class="hud-bottom-left">
+          <div class="sim-badge" data-disclaimer-short>Conceptual prototype · simulated interactions</div>
+        </div>
+        <div class="hud-bottom-center">
+          <button class="prompt" id="hud-prompt" type="button" hidden><kbd>E</kbd><span id="hud-prompt-text"></span></button>
+        </div>
+        <div class="touch-controls" id="touch-controls">
+          <div class="joystick" id="joystick" aria-label="Movement joystick"><div class="joy-knob"></div></div>
+          <button class="touch-btn touch-jump" id="touch-jump" type="button" aria-label="Hop">Hop</button>
+        </div>
+        <div class="region-banner" id="region-banner" aria-live="polite">
+          <p class="region-banner-eyebrow">Entering</p>
+          <h2 class="region-banner-title" id="region-banner-title"></h2>
+          <p class="region-banner-tag" id="region-banner-tag"></p>
+        </div>
+        <div class="toasts" id="toasts" aria-live="polite"></div>
+      </div>
+
+      <!-- ============================================================ FOCUS MODE -->
+      <div id="focus-ui" class="overlay-ui" role="dialog" aria-labelledby="focus-title" aria-describedby="focus-note">
+        <div class="focus-card">
+          <p class="eyebrow" id="focus-eyebrow">Focus Mode</p>
+          <h2 class="display-sm" id="focus-title"></h2>
+          <p class="focus-instruction" id="focus-instruction"></p>
+          <p class="sim-note" id="focus-note"></p>
+        </div>
+        <div class="focus-control">
+          <button class="focus-button" id="focus-button" type="button" aria-describedby="focus-hint">
+            <svg class="focus-ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="54" class="ring-bg" />
+              <circle cx="60" cy="60" r="54" class="ring-fg" id="focus-ring-fg" />
+            </svg>
+            <span class="focus-button-label" id="focus-button-label">Hold</span>
+          </button>
+          <p class="focus-hint" id="focus-hint"></p>
+          <button class="btn btn-ghost btn-sm" id="focus-cancel" type="button">Step back <kbd>Esc</kbd></button>
+        </div>
+      </div>
+
+      <!-- ============================================================ TRIAL (Great Bloom + Left/Right) -->
+      <div id="trial-ui" class="overlay-ui" role="dialog" aria-labelledby="trial-title">
+        <div class="trial-panel">
+          <div class="sim-banner">SIMULATED — NO EEG DATA IS BEING RECORDED.</div>
+          <p class="eyebrow" id="trial-eyebrow"></p>
+          <h2 class="display-sm" id="trial-title"></h2>
+          <ol class="trial-steps" id="trial-steps"></ol>
+          <div class="trial-body" id="trial-body" aria-live="polite"></div>
+          <div class="trial-visual" id="trial-visual">
+            <div class="breath" id="trial-breath" aria-hidden="true"><div class="breath-ring" id="trial-breath-ring"></div></div>
+            <canvas id="trial-canvas" class="signal-canvas" aria-label="Simulated illustrative waveform"></canvas>
+            <div class="classifier" id="trial-classifier"></div>
+          </div>
+          <div class="actions" id="trial-actions"></div>
+        </div>
+      </div>
+
+      <!-- ============================================================ REST -->
+      <section id="rest" class="screen rest-screen" role="dialog" aria-modal="true" aria-labelledby="rest-title">
+        <div class="rest-inner">
+          <div class="breath breath-lg" aria-hidden="true"><div class="breath-ring"></div></div>
+          <h2 class="display" id="rest-title"></h2>
+          <p class="subtitle" id="rest-body"></p>
+          <p class="muted" id="rest-breathing"></p>
+          <div class="actions">
+            <button class="btn btn-primary" id="rest-continue" type="button">Continue when ready</button>
+            <button class="btn btn-secondary" id="rest-break" type="button">Take a longer break</button>
+            <button class="btn btn-ghost" id="rest-end" type="button">End session &amp; see summary</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ PAUSE MENU -->
+      <section id="pause" class="screen dialog-screen" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+        <div class="card card-menu">
+          <p class="eyebrow">Paused · the garden will wait</p>
+          <h2 class="display-sm" id="pause-title">Take your time</h2>
+          <div class="menu-grid">
+            <button class="btn btn-primary" id="pause-resume" type="button">Resume</button>
+            <button class="btn btn-secondary" id="pause-rest" type="button">Rest for a moment</button>
+            <button class="btn btn-secondary" data-open="journal" type="button">Discovery journal</button>
+            <button class="btn btn-secondary" data-open="map" type="button">Map &amp; guided travel</button>
+            <button class="btn btn-secondary" data-open="science" type="button">How MindWave would work</button>
+            <button class="btn btn-secondary" data-open="research" type="button">Our research</button>
+            <button class="btn btn-secondary" data-open="settings" type="button">Settings &amp; accessibility</button>
+            <button class="btn btn-ghost" id="pause-end" type="button">End session &amp; summary</button>
+          </div>
+          <p class="disclaimer" data-disclaimer></p>
+        </div>
+      </section>
+
+      <!-- ============================================================ SHEETS -->
+      <section id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+        <div class="sheet-inner">
+          <header class="sheet-head">
+            <div>
+              <p class="eyebrow" id="sheet-eyebrow"></p>
+              <h2 class="display-sm" id="sheet-title"></h2>
+            </div>
+            <button class="icon-btn icon-btn-lg" id="sheet-close" type="button" aria-label="Close (Esc)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12 M18 6L6 18"/></svg></button>
+          </header>
+          <div class="sheet-body" id="sheet-body"></div>
+        </div>
+      </section>
+
+      <!-- ============================================================ INFO CARD (landmark explanations) -->
+      <div id="info-card" class="info-card" role="dialog" aria-labelledby="info-title" aria-live="polite">
+        <p class="eyebrow" id="info-eyebrow"></p>
+        <h3 id="info-title"></h3>
+        <p id="info-body"></p>
+        <p class="sim-note" id="info-proto"></p>
+        <div class="actions"><button class="btn btn-primary btn-sm" id="info-close" type="button">Continue <kbd>E</kbd></button></div>
+      </div>
+
+      <!-- ============================================================ FINALE CAPTIONS -->
+      <div id="finale" class="finale" aria-live="polite"><div id="finale-captions"></div></div>
+
+      <div id="fade" aria-hidden="true"></div>
+      <noscript><p class="noscript">MindWave — The Living Garden needs JavaScript and WebGL to run.</p></noscript>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

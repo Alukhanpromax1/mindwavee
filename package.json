@@ -1,0 +1,22 @@
+{
+  "name": "mindwave-living-garden",
+  "private": true,
+  "version": "4.0.0",
+  "description": "MindWave (NYAS Junior Academy BrainTech, Team 7086) — The Living Garden: a 3D open-world conceptual prototype. Simulated interactions only; not a validated medical device or clinical treatment.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "node scripts/check-claims.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.8"
+  }
+}
